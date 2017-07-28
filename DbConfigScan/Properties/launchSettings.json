@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DbConfigscan": {
+      "commandName": "Project",
+      "commandLineArgs": "scan -dir P:\\ -out E:/abc.csv"
+    }
+  }
+}
