@@ -2,7 +2,7 @@
   "profiles": {
     "DbConfigscan": {
       "commandName": "Project",
-      "commandLineArgs": "scan -dir P:\\ -out E:/abc.csv"
+      "commandLineArgs": "merge -dir E:/ -file 1.csv  -out E:/db.csv"
     }
   }
 }

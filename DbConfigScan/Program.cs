@@ -76,6 +76,27 @@ namespace DbConfigScan
                 });
             });
 
+            var mergeCmd = app.Command("merge", p =>
+            {
+                p.Description = "合并CSV文件";
+               
+                var dirOpt = p.Option("-dir", "存放csv文件的路径", CommandOptionType.SingleValue);
+                var filesOpt = p.Option("-file", "文件名称，可包含多个, 请使用 过个 -file 传递", CommandOptionType.MultipleValue);
+                var outOpt = p.Option("-out", "输出CSV文件位置", CommandOptionType.SingleValue);
+                p.OnExecute(() =>
+                {
+                    if(dirOpt.HasValue() && filesOpt.HasValue() && outOpt.HasValue())
+                    {
+                        Merge(dirOpt.Value(), filesOpt.Values,outOpt.Value());
+                    }
+                    else
+                    {
+                        p.ShowHelp();
+                    }
+                    return 0;
+                });
+            });
+
             app.OnExecute(() =>
             {
                 app.ShowHelp();
@@ -106,6 +127,32 @@ namespace DbConfigScan
             Console.WriteLine("写入完成");
 
             return 0;
+        }
+
+        static void Merge(string dir,IEnumerable<string> files,string outFile)
+        {
+            var pathList = new List<string>();
+            if(files == null || files.Count() == 0)
+            {
+                Console.WriteLine("未传递文件，程序退出");
+                return;
+            }
+            Console.WriteLine("开始合并 ....");
+            foreach(var f in files)
+            {
+                var p = Path.Combine(dir, f);
+                if (!File.Exists(p))
+                {
+                    Console.WriteLine($"文件{p}不存在, 程序终止");
+                    return;
+                }
+                pathList.Add(p);
+            }
+
+            var combin = new CSVCombin(pathList);
+            combin.WriteTo(outFile);
+            Console.WriteLine("合并完成", Path.GetFullPath(outFile));
+            return;
         }
     }
 }

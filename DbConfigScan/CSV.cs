@@ -30,5 +30,16 @@ namespace DbConfigScan
             }
             
         }
+
+
+        public static void WriteDbConfigToCSV(IEnumerable<DbValue> list, string path)
+        {
+            using (var writer = new StreamWriter(path, false, Encoding.Default))
+            {
+                var csvWriter = new CsvWriter(writer);
+                csvWriter.Configuration.RegisterClassMap(new DbValueCsvMaper());
+                csvWriter.WriteRecords(list);
+            }
+        }
     }
 }
